@@ -1,26 +1,73 @@
-import { StyleSheet, View, Pressable, Text } from 'react-native';
+import { StyleSheet, View, Pressable, Text, TouchableOpacity } from 'react-native';
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-export default function Button({ label, theme, onPress, pressed }) {
+export default function Button({ label, theme, onPress }) {
   if (theme === "primary") {
     return (
       <View style={[styles.buttonContainer, { borderWidth: 4, borderColor: "#16f5ea", borderRadius: 18 }]}>
-        <Pressable
+        <TouchableOpacity
         
           style={[styles.button, { backgroundColor: "#fff" }]}
         
           onPress={onPress}
         >
           <FontAwesome
-            name="picture-o"
+            name="folder"
             size={20}
             color="#25292e"
             style={styles.buttonIcon}
           />
           <Text style={[styles.buttonLabel, { color: "#25292e" }]}>{label}</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     );
+  }  else if (theme === "secondary"){
+    return (
+      <View style={[styles.buttonContainer, { borderWidth: 4, borderColor: "#16f5ea", borderRadius: 18 }]}>
+        <TouchableOpacity
+        
+          style={[styles.button, { backgroundColor: "#fff" }]}
+        
+          onPress={onPress}
+        >
+
+
+        <FontAwesome 
+        name="camera" 
+        size={20} 
+        color="#25292e" 
+        style={styles.buttonIcon} 
+        />
+
+
+
+          <Text style={[styles.buttonLabel, { color: "#25292e" }]}>{label}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+
+  } else if (theme === "tertinary"){
+    return (
+      <View style={[styles.buttonContainer, { borderWidth: 4, borderColor: "#16f5ea", borderRadius: 18 }]}>
+        <TouchableOpacity
+        
+          style={[styles.button, { backgroundColor: "#fff" }]}
+        
+          onPress={onPress}
+        >
+
+        <FontAwesome 
+        name="music" 
+        size={20} 
+        color="#25292e" 
+        style={styles.buttonIcon} 
+        />
+
+          <Text style={[styles.buttonLabel, { color: "#25292e" }]}>{label}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+
   }
 
   return (

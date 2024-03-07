@@ -1,15 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, Text, View, Image } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import ImageViewer from './Components/ImageViewer';
 import Button from './Components/Button';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
-
+import { useEffect, useState } from 'react';
+import { Audio } from 'expo-av';
 
 const PlaceholderImage = require('./assets/pic3.jpeg');
-
 export default function App() {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [sound, setSound] = useState();
+
+  useEffect(() => {
+    return sound ? () => sound.unloadAsync() : undefined;
+  },[sound]);
+
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -24,6 +29,74 @@ export default function App() {
     }
   };
 
+
+  // const takePictureAsync = async () => {
+  //   const cameraPermission = await ImagePicker.getCameraPermissionsAsync();
+  //   if (!cameraPermission.granted) {
+  //     alert('Camera permission not granted.');
+  //     return;
+  //   }
+
+  //   let result = await ImagePicker.launchCameraAsync({
+  //     allowsEditing: true,
+  //     quality: 1,
+  //   });
+
+  //   if (!result.cancelled) {
+  //     setSelectedImage(result.assets[0].uri);
+  //   } else {
+  //     alert('You did not take any picture.');
+  //   }
+  // };
+
+
+  // const takePictureAsync = async () => {
+  //   let result = await ImagePicker.launchCameraAsync({
+  //     allowsEditing: true,
+  //     quality: 1,
+  //   })
+  //   if (!result.canceled) {
+  //     setSelectedImage(result.assets[0].uri);
+  //   } else {
+  //     alert('You did not take any picture');
+  //   }
+  // };
+
+
+
+  const takePictureAsync = async () => {
+    // Get camera permissions
+    let permission = await ImagePicker.getCameraPermissionsAsync();
+    console.log(permission); // Log the permissions
+  
+    if (permission.status === 'granted') {
+      // Launch the camera
+      let result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        quality: 1,
+      });
+  
+      if (!result.canceled) {
+        setSelectedImage(result.assets[0].uri);
+      } else {
+        alert('You did not take any picture');
+      }
+    } else if (permission.status === 'denied') {
+      alert('Camera access denied. Please enable camera access in your device settings.');
+    } else {
+      alert('Camera access is not determined. Please try again later.');
+    }
+  };
+
+async function addMusic() {
+  console.log('Loading Sound...');
+  const {sound} = await Audio.Sound.createAsync(require('./assets/guitar2.mp3'));
+  setSound(sound);
+
+  console.log('Playing Sound');
+  await sound.playAsync();
+}
+
   return (
     <SafeAreaView style={styles.container}>
 
@@ -33,17 +106,20 @@ export default function App() {
       </View>
 
       <View style={styles.imageContainer}>
-        <ImageViewer 
-        placeholderImageSource={PlaceholderImage}
-        selectedImage={selectedImage}
+        <ImageViewer
+          placeholderImageSource={PlaceholderImage}
+          selectedImage={selectedImage}
         />
       </View>
 
       <View style={styles.footerContainer}>
+
         <Button theme="primary" label="Choose a photo" onPress={pickImageAsync} />
-        <Button label="Use this photo" />
-        <Button label="Take a picture" />
+        <Button theme="secondary" label='Take a picture' onPress={takePictureAsync} />
+        <Button theme="tertinary" label='Play music' onPress={addMusic} />
+
       </View>
+
 
     </SafeAreaView>
   );
@@ -68,117 +144,3 @@ const styles = StyleSheet.create({
 
 });
 
-
-
-// import { StatusBar } from 'expo-status-bar';
-// import { SafeAreaView, StyleSheet, View } from 'react-native';
-// import ImageViewer from './Components/ImageViewer';
-// import Button from './Components/Button';
-// import { useState, useEffect, useRef } from 'react'; // Add useRef import
-// import { Camera } from 'expo-camera';
-// import * as ImagePicker from 'expo-image-picker'; // Add ImagePicker import
-
-// const PlaceholderImage = require('./assets/pic1.jpeg');
-
-// export default function App() {
-//   const [selectedImage, setSelectedImage] = useState(null);
-//   const [cameraPermission, setCameraPermission] = useState(null);
-//   const [showCamera, setShowCamera] = useState(false); // State to control camera visibility
-//   const cameraRef = useRef(null); // Initialize cameraRef
-
-//   useEffect(() => {
-//     (async () => {
-//       const { status } = await Camera.requestCameraPermissionsAsync();
-//       setCameraPermission(status === 'granted');
-//     })();
-//   }, []);
-
-//   const takePhoto = async () => {
-//     if (cameraRef.current) {
-//       const photo = await cameraRef.current.takePictureAsync();
-//       setSelectedImage(photo.uri);
-//     }
-//   };
-
-//   const pickImageAsync = async () => {
-//     let result = await ImagePicker.launchImageLibraryAsync({
-//       allowsEditing: true,
-//       quality: 1,
-//     });
-
-//     if (!result.canceled) {
-//       setSelectedImage(result.assets[0].uri);
-//     } else {
-//       alert('You did not select any image.');
-//     }
-//   };
-
-//   if (cameraPermission === null) {
-//     return <View />;
-//   }
-//   if (!cameraPermission) {
-//     return <Text>No access to camera</Text>;
-//   }
-
-//   return (
-//     <SafeAreaView style={styles.container}>
-//       <View style={styles.content}>
-//         {/* Show camera if showCamera state is true */}
-//         {showCamera && (
-//           <Camera style={styles.camera} type={Camera.Constants.Type.back} ref={cameraRef}>
-//             <View style={styles.buttonContainer}>
-//               <Button theme="primary" label="Take a photo" onPress={takePhoto} />
-//             </View>
-//           </Camera>
-//         )}
-
-//         {/* ImageViewer and buttons */}
-//         <View style={styles.imageContainer}>
-//           <ImageViewer placeholderImageSource={PlaceholderImage} selectedImage={selectedImage} />
-//         </View>
-//         <View style={styles.footerContainer}>
-//           <Button theme="primary" label="Choose a photo" onPress={pickImageAsync} />
-//           <Button label="Use this photo" />
-//           {/* Show the "Take a photo" button */}
-//           {!showCamera && (
-//             <View style={styles.buttonContainer}>
-//               <Button theme="primary" label="Take a photo" onPress={() => setShowCamera(true)} />
-//             </View>
-//           )}
-//         </View>
-//       </View>
-//       <StatusBar style="auto" />
-//     </SafeAreaView>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#282828',
-//   },
-//   content: {
-//     flex: 1,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   camera: {
-//     flex: 1,
-//     width: '100%',
-//   },
-//   buttonContainer: {
-//     // position:'relative',
-//     bottom: 10,
-//     left: 5,
-//   },
-//   imageContainer: {
-//     flex: 1,
-//     paddingTop: 80,
-//   },
-//   footerContainer: {
-//     flexDirection: 'column', // Align buttons vertically
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     marginBottom: 50,
-//   },
-// });
