@@ -1,10 +1,11 @@
 import { StyleSheet, View, Pressable, Text, TouchableOpacity } from 'react-native';
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
+
 export default function Button({ label, theme, onPress }) {
   if (theme === "primary") {
     return (
-      <View style={[styles.buttonContainer, { borderWidth: 4, borderColor: "#16f5ea", borderRadius: 18 }]}>
+      <View style={[styles.buttonContainer, { borderWidth: 4, borderColor: "#9ABFDA", borderRadius: 18 }]}>
         <TouchableOpacity
         
           style={[styles.button, { backgroundColor: "#fff" }]}
@@ -23,7 +24,7 @@ export default function Button({ label, theme, onPress }) {
     );
   }  else if (theme === "secondary"){
     return (
-      <View style={[styles.buttonContainer, { borderWidth: 4, borderColor: "#16f5ea", borderRadius: 18 }]}>
+      <View style={[styles.buttonContainer, { borderWidth: 4, borderColor: "#9ABFDA", borderRadius: 18 }]}>
         <TouchableOpacity
         
           style={[styles.button, { backgroundColor: "#fff" }]}
@@ -48,7 +49,7 @@ export default function Button({ label, theme, onPress }) {
 
   } else if (theme === "tertinary"){
     return (
-      <View style={[styles.buttonContainer, { borderWidth: 4, borderColor: "#16f5ea", borderRadius: 18 }]}>
+      <View style={[styles.buttonContainer, { borderWidth: 4, borderColor: "#9ABFDA", borderRadius: 18 }]}>
         <TouchableOpacity
         
           style={[styles.button, { backgroundColor: "#fff" }]}
@@ -57,7 +58,7 @@ export default function Button({ label, theme, onPress }) {
         >
 
         <FontAwesome 
-        name="music" 
+        name="send" 
         size={20} 
         color="#25292e" 
         style={styles.buttonIcon} 
